@@ -1,0 +1,84 @@
+C51 COMPILER V9.56.0.0   ADC                                                               10/28/2017 22:05:05 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE ADC
+OBJECT MODULE PLACED IN .\Objects\adc.obj
+COMPILER INVOKED BY: E:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE adc.c OPTIMIZE(8,SPEED) DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\adc.lst) OBJECT(.\Objects\adc.obj)
+
+line level    source
+
+   1          #include <stc8.h>
+   2          #include <intrins.h>
+   3          
+   4          unsigned int temp_buf;
+   5          //
+   6          void Init();
+   7          void delay();   //5ms
+   8          void delay1(unsigned char i);
+   9          void adc_init();
+  10          unsigned int adc_l_read();
+  11          unsigned int adc_b_read();
+  12          unsigned int adc_r_read();
+  13          
+  14          void adc_init()
+  15          {
+  16   1              P1M0 = 0x00;
+  17   1              P1M1 = 0x07;
+  18   1              ADC_CONTR = 0x80;       //start adc_power
+  19   1              _nop_();_nop_();_nop_();_nop_();
+  20   1              _nop_();_nop_();_nop_();_nop_();
+  21   1              ADCCFG = 0x20;          //set adc_speed and shijugeshi
+  22   1      }
+  23          
+  24          unsigned int adc_l_read()
+  25          {
+  26   1              ADC_CONTR = 0x82;       //set adc_channel
+  27   1              ADC_CONTR |= 0x40;      //start adc
+  28   1              while(!(ADC_CONTR & 0x20));     //wait adc finish
+  29   1              ADC_CONTR &= ~0x20;             //clear adc_flag
+  30   1              temp_buf = (ADC_RES << 8) + ADC_RESL;
+  31   1              _nop_();_nop_();_nop_();_nop_();
+  32   1              _nop_();_nop_();_nop_();_nop_();
+  33   1              return temp_buf;
+  34   1      }
+  35          
+  36          unsigned int adc_b_read()
+  37          {
+  38   1              ADC_CONTR = 0x81;       //set adc_channel
+  39   1              ADC_CONTR |= 0x40;      //start adc
+  40   1              while(!(ADC_CONTR & 0x20));     //wait adc finish
+  41   1              ADC_CONTR &= ~0x20;             //clear adc_flag
+  42   1              temp_buf = (ADC_RES << 8) + ADC_RESL;
+  43   1              _nop_();_nop_();_nop_();_nop_();
+  44   1              _nop_();_nop_();_nop_();_nop_();
+  45   1              return temp_buf;
+  46   1      }
+  47          
+  48          unsigned int adc_r_read()
+  49          {
+  50   1              ADC_CONTR = 0x80;       //set adc_channel
+  51   1              ADC_CONTR |= 0x40;      //start adc
+  52   1              while(!(ADC_CONTR & 0x20));     //wait adc finish
+  53   1              ADC_CONTR &= ~0x20;             //clear adc_flag
+  54   1              temp_buf = (ADC_RES << 8) + ADC_RESL;
+C51 COMPILER V9.56.0.0   ADC                                                               10/28/2017 22:05:05 PAGE 2   
+
+  55   1              _nop_();_nop_();_nop_();_nop_();
+  56   1              _nop_();_nop_();_nop_();_nop_();
+  57   1              return temp_buf;
+  58   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    147    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\adc.obj",
+".\Objects\main.obj",
+".\Objects\pwm.obj",
+".\Objects\road_init.obj" 
+TO ".\Objects\ThinkCar_B" 
+PRINT(".\Listings\ThinkCar_B.m51") RAMSIZE(256) 

@@ -1,0 +1,106 @@
+C51 COMPILER V9.56.0.0   ROAD_INIT                                                         10/28/2017 22:05:06 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE ROAD_INIT
+OBJECT MODULE PLACED IN .\Objects\road_init.obj
+COMPILER INVOKED BY: E:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE road_init.c OPTIMIZE(8,SPEED) DEBUG OBJECTEXTEND PRI
+                    -NT(.\Listings\road_init.lst) OBJECT(.\Objects\road_init.obj)
+
+line level    source
+
+   1          #include <stc8.h>
+   2          #include <intrins.h>
+   3          
+   4          void Delay5ms();
+   5          void Delay50us();
+   6          extern unsigned int adc_l_read();
+   7          extern unsigned int adc_b_read();
+   8          extern unsigned int adc_r_read();
+   9          
+  10          void road_init(unsigned int *av_max_l, unsigned int *av_max_r, unsigned int *av_flag_l, unsigned int *av_f
+             -lag_r)
+  11          {
+  12   1              unsigned int temp_l, temp_r, i;
+  13   1              unsigned int max_l, max_r, flag_l, flag_r;
+  14   1              
+  15   1              max_l = 0;
+  16   1              max_r = 0;
+  17   1              flag_l = 0;
+  18   1              flag_r = 0;
+  19   1              
+  20   1              *av_max_l = 0;
+  21   1              *av_max_r = 0;
+  22   1              *av_flag_l = 0;
+  23   1              *av_flag_r = 0;
+  24   1                      
+  25   1              for (i = 1; i <= 1000; i++)
+  26   1              {
+  27   2                      temp_l = adc_l_read();
+  28   2                      Delay50us();
+  29   2                      temp_r = adc_r_read();
+  30   2                      if (temp_l > max_l)
+  31   2                      { 
+  32   3                              max_l = temp_l;
+  33   3                              flag_r = temp_r;
+  34   3                      }
+  35   2                      if (temp_r > max_r)
+  36   2                      {
+  37   3                              max_r = temp_r;
+  38   3                              flag_l = temp_l;
+  39   3                      }
+  40   2                      Delay5ms();
+  41   2              }
+  42   1      
+  43   1              *av_max_l = max_l;
+  44   1              *av_max_r = max_r;
+  45   1              *av_flag_l = flag_l;
+  46   1              *av_flag_r = flag_r;
+  47   1      
+  48   1              
+  49   1              *av_flag_l = (int)(100 * (float)(*av_flag_l) / (float)(*av_max_l));
+  50   1              *av_flag_r = (int)(100 * (float)(*av_flag_r) / (float)(*av_max_r));
+  51   1      }
+  52          
+  53          void Delay5ms()         //@24.000MHz —” ±5ms
+C51 COMPILER V9.56.0.0   ROAD_INIT                                                         10/28/2017 22:05:06 PAGE 2   
+
+  54          {
+  55   1              unsigned char i, j;
+  56   1      
+  57   1              _nop_();
+  58   1              _nop_();
+  59   1              i = 156;
+  60   1              j = 213;   
+  61   1              do
+  62   1              {
+  63   2                      while (--j);
+  64   2              } while (--i);
+  65   1      }
+  66          
+  67          void Delay50us()                //@24.000MHz
+  68          {
+  69   1              unsigned char i, j;
+  70   1      
+  71   1              _nop_();
+  72   1              i = 2;
+  73   1              j = 140;
+  74   1              do
+  75   1              {
+  76   2                      while (--j);
+  77   2              } while (--i);
+  78   1      }
+  79          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    388    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      24
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

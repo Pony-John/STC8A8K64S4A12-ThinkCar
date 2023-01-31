@@ -1,0 +1,219 @@
+C51 COMPILER V9.56.0.0   MAIN                                                              10/28/2017 22:05:05 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: E:\Program Files (x86)\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) DEBUG OBJECTEXTEND PRINT(.\
+                    -Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <stc8.h>
+   2          #include <intrins.h>
+   3          #include <math.h>
+   4          
+   5          void init();
+   6          void T0_init();
+   7          extern void pwm_init();
+   8          extern void adc_init();
+   9          extern void pwm_speed(float volt);
+  10          extern void pwm_direct(float angle);
+  11          extern void pwm_brake();
+  12          extern unsigned int adc_l_read();
+  13          extern unsigned int adc_b_read();
+  14          extern unsigned int adc_r_read();
+  15          extern void road_init(unsigned int *av_max_l, unsigned int *av_max_r, unsigned int *av_flag_l, unsigned in
+             -t *av_flag_r);
+  16          extern void Delay5ms();
+  17          extern void Delay50us();
+  18          
+  19          /////
+  20          //extern void pwm1_setWide(unsigned int time_h);
+  21          bit flag;
+  22          unsigned int av_max_l, av_max_r, av_flag_l, av_flag_r;
+  23          
+  24          void main()
+  25          {
+  26   1              Delay5ms();
+  27   1              flag = 1;
+  28   1              T0_init();
+  29   1              init();
+  30   1              pwm_init();
+  31   1              adc_init();
+  32   1              P64 = 0;
+  33   1              while (1)
+  34   1              {
+  35   2                      while(flag)
+  36   2                      {
+  37   3                              if(P64 == 1)
+  38   3                              {
+  39   4                                      Delay5ms();
+  40   4                                      Delay5ms();
+  41   4                                      if (P64 == 1)
+  42   4                                      {
+  43   5                                              P67 = 0;
+  44   5                                              road_init(&av_max_l, &av_max_r, &av_flag_l, &av_flag_r);
+  45   5                                              flag = 0;
+  46   5                                              P67 = 1;
+  47   5                                              EA = 1;
+  48   5                                              while (P64);                                    
+  49   5                                      }
+  50   4                              }
+  51   3                      }
+  52   2                      while(!flag);   
+  53   2              }
+C51 COMPILER V9.56.0.0   MAIN                                                              10/28/2017 22:05:05 PAGE 2   
+
+  54   1      }
+  55          /*
+  56          void main()
+  57          {
+  58                  pwm_init();
+  59                  while(1)
+  60                  {
+  61                          pwm2_setWide(1700);
+  62                          pwm2_setWide(1900);
+  63                          pwm2_setWide(2100);
+  64                          pwm2_setWide(2300);
+  65                          pwm2_setWide(2500);
+  66                          pwm2_setWide(2700);
+  67                                  
+  68                  }
+  69          
+  70          }
+  71          
+  72          void main()
+  73          {
+  74                  pwm_init();
+  75                  while(1)
+  76                  {
+  77                          pwm1_setWide(1700);
+  78                          Delay5ms();
+  79                                          Delay5ms();
+  80                          Delay5ms();
+  81                                          Delay5ms();
+  82                          Delay5ms();
+  83                                          Delay5ms();
+  84                          Delay5ms();
+  85                                          Delay5ms();
+  86                          pwm1_setWide(1900);
+  87                          Delay5ms();
+  88                                          Delay5ms();
+  89                          Delay5ms();
+  90                                          Delay5ms();
+  91                          Delay5ms();
+  92                                          Delay5ms();
+  93                          Delay5ms();
+  94                                          Delay5ms();
+  95                          
+  96                          pwm1_setWide(2100);
+  97                          
+  98                          Delay5ms();
+  99                                          Delay5ms();
+ 100                          Delay5ms();
+ 101                                          Delay5ms();
+ 102                          Delay5ms();
+ 103                                          Delay5ms();
+ 104                          Delay5ms();
+ 105                                          Delay5ms();
+ 106                                          pwm1_setWide(2300);
+ 107                          pwm1_setWide(2500);
+ 108                          Delay5ms();
+ 109                                          Delay5ms();
+ 110                          Delay5ms();
+ 111                                          Delay5ms();
+ 112                          Delay5ms();
+ 113                                          Delay5ms();
+ 114                          Delay5ms();
+ 115                                          Delay5ms();
+C51 COMPILER V9.56.0.0   MAIN                                                              10/28/2017 22:05:05 PAGE 3   
+
+ 116                          pwm1_setWide(2700);
+ 117                          Delay5ms();
+ 118                                          Delay5ms();
+ 119                          Delay5ms();
+ 120                                          Delay5ms();
+ 121                          Delay5ms();
+ 122                                          Delay5ms();
+ 123                          Delay5ms();
+ 124                                          Delay5ms();
+ 125                                  
+ 126                  }
+ 127          }*/
+ 128          void init()
+ 129          {
+ 130   1              P6M0 = 0;
+ 131   1              P6M1 = 0;
+ 132   1      }
+ 133          void T0_init()          //10ms @ 24.000MHz
+ 134          {
+ 135   1              AUXR &= 0x7F;   //定时器时钟12T模式
+ 136   1              TMOD &= 0xF0;   //设置定时器模式
+ 137   1              TL0 = 0xE0;             //设置定时初值
+ 138   1              TH0 = 0xB1;             //设置定时初值
+ 139   1              TF0 = 0;                //清除TF0标志
+ 140   1              TR0 = 1;                //定时器0开始计时
+ 141   1              ET0 = 1;        //使能定时器中断
+ 142   1          //EA = 1;
+ 143   1      }
+ 144          
+ 145          void TM0_Isr() interrupt 1 
+ 146          {
+ 147   1              float k;
+ 148   1              float BL, BR;
+ 149   1              float speed;
+ 150   1              BL = 100 * ((float)adc_l_read() / (float)av_max_l);
+ 151   1              //BL = adc_l_read();
+ 152   1              Delay50us();
+ 153   1              BR = 100 * ((float)adc_r_read() / (float)av_max_r);
+ 154   1              //BR = adc_r_read();
+ 155   1              /*if (BL < av_flag_l)
+ 156   1              {
+ 157   1                      k = -32;
+ 158   1              }
+ 159   1              else if (BR < av_flag_r)
+ 160   1              {
+ 161   1                      k = 32;
+ 162   1              }*/
+ 163   1              k = (BL - BR) * (fabs(BL-BR) / 32);
+ 164   1              /*else*/ 
+ 165   1              /*if (fabs(BL-BR) < 8)
+ 166   1              {
+ 167   1                      k = 0;
+ 168   1              }
+ 169   1              else if ((fabs(BL - BR) > 8) && (fabs(BL - BR) < 16))
+ 170   1              {
+ 171   1                      k = 0.2 * (BL-BR);
+ 172   1              }
+ 173   1              else if ((fabs(BL - BR) > 16) && (fabs(BL - BR) < 32))
+ 174   1              {
+ 175   1                      k = 0.7 * (BL - BR);
+ 176   1              }
+ 177   1              else if (fabs(BL - BR) > 32)
+C51 COMPILER V9.56.0.0   MAIN                                                              10/28/2017 22:05:05 PAGE 4   
+
+ 178   1              {
+ 179   1                      k = (BL - BR); 
+ 180   1              }*/
+ 181   1              
+ 182   1              speed = 1.5;
+ 183   1              pwm_speed(speed);
+ 184   1              pwm_direct(k);
+ 185   1              //speed = 2.5 - fabs(k) / 20;
+ 186   1              pwm_speed(speed);
+ 187   1      }
+ 188          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    422    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
